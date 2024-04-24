@@ -6,4 +6,12 @@ typedef struct {
   int y;
 } vector_2d_t;
 
+typedef enum
+{
+  NONE,
+  PATH,
+  ROOM,
+  WALL,
+} base_block_t;
+
 #endif
