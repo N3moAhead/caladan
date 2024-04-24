@@ -25,15 +25,6 @@ static base_block_t **malloc_map(int width, int height)
   return new_map;
 }
 
-static void free_map(base_block_t **map, int height)
-{
-  for (int i = 0; i < height; i++)
-  {
-    free(map[i]);
-  }
-  free(map);
-}
-
 static base_block_t **init_map(int width, int height)
 {
   base_block_t **new_map = malloc_map(width, height);
@@ -195,6 +186,15 @@ static void refine_map(base_block_t **map, int width, int height)
       free(surr_blocks);
     }
   }
+}
+
+void free_map(base_block_t **map, int height)
+{
+  for (int i = 0; i < height; i++)
+  {
+    free(map[i]);
+  }
+  free(map);
 }
 
 /**
