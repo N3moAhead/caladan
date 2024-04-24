@@ -1,4 +1,4 @@
-SRC_DIRS := ./src ./src/util ./src/entity
+SRC_DIRS := ./src ./src/util ./src/entity ./src/component
 SRC_FILES := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.c))
 OBJ_FILES := $(patsubst %.c,%.o,$(SRC_FILES))
 
