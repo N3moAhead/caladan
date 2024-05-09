@@ -6,19 +6,11 @@ typedef struct {
   int y;
 } vector_2d_t;
 
-// The most basic block type that map generators will use,
-// to create rooms 
-typedef enum
-{
-  NONE,
-  PATH,
-  ROOM,
-  WALL,
-} base_block_t;
-
-// Prison Dungeon Blocks
+// The tile type each map consists of
 typedef enum {
+  NONE,
   /** WALLS */
+  WALL,
   WALL_VERTICAL,
   WALL_HORIZONTAL,
   // A wall that connects the bottom side with the right side
@@ -35,11 +27,11 @@ typedef enum {
   /** FLOORS */
   PATH,
   ROOM,
-} pd_block_t;
+} block_t;
 
 // Linked list node for Prison Dungeon Blocks
 typedef struct pd_block_node {
-  pd_block_t block;
+  block_t block;
   struct pd_block_node *next;
 } pd_block_node_t;
 

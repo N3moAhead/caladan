@@ -5,9 +5,9 @@
 #include <time.h>
 #include "../types.h"
 
-static base_block_t **malloc_map(int width, int height)
+static block_t **malloc_map(int width, int height)
 {
-  base_block_t **new_map = (base_block_t **)malloc(height * sizeof(base_block_t *));
+  block_t **new_map = (block_t **)malloc(height * sizeof(block_t *));
   if (new_map == NULL)
   {
     printf("ERROR Could not malloc inside of malloc_map");
@@ -15,7 +15,7 @@ static base_block_t **malloc_map(int width, int height)
   }
   for (int i = 0; i < height; i++)
   {
-    new_map[i] = (base_block_t *)malloc(width * sizeof(base_block_t));
+    new_map[i] = (block_t *)malloc(width * sizeof(block_t));
     if (new_map[i] == NULL)
     {
       printf("ERROR: Could not malloc inside of malloc_map");
@@ -25,9 +25,9 @@ static base_block_t **malloc_map(int width, int height)
   return new_map;
 }
 
-static base_block_t **init_map(int width, int height)
+static block_t **init_map(int width, int height)
 {
-  base_block_t **new_map = malloc_map(width, height);
+  block_t **new_map = malloc_map(width, height);
   for (int row = 0; row < height; row++)
   {
     for (int col = 0; col < width; col++)
@@ -56,7 +56,7 @@ static int rand_bsp_number(int value, int min_value)
  * But i think with some adjustment later on its a
  * good point to start from!
  */
-static void bsp(base_block_t **map, int depth, int lx, int hx, int ly, int hy, int min_width, int min_height)
+static void bsp(block_t **map, int depth, int lx, int hx, int ly, int hy, int min_width, int min_height)
 {
   int width = hx - lx;
   int height = hy - ly;
@@ -114,9 +114,9 @@ static void bsp(base_block_t **map, int depth, int lx, int hx, int ly, int hy, i
 // If the given position is on the edge of the map the function will return NONE for
 // The Blocks that are out of bounds. The block will be returned beginning from the top one
 // And then added clockwise to the returned array. The returned array must be freed after usage!
-static base_block_t *get_surrounding_blocks(base_block_t **map, vector_2d_t pos, int map_width, int map_height)
+static block_t *get_surrounding_blocks(block_t **map, vector_2d_t pos, int map_width, int map_height)
 {
-  base_block_t *surrounding_blocks = (base_block_t *)malloc(8 * sizeof(base_block_t));
+  block_t *surrounding_blocks = (block_t *)malloc(8 * sizeof(block_t));
   // TOP
   surrounding_blocks[0] = pos.y - 1 >= 0 ? map[pos.y - 1][pos.x] : NONE;
   // TOP Right
@@ -138,13 +138,13 @@ static base_block_t *get_surrounding_blocks(base_block_t **map, vector_2d_t pos,
 }
 
 // Removes every path thats leading into nothing
-static void refine_map(base_block_t **map, int width, int height)
+static void refine_map(block_t **map, int width, int height)
 {
   for (int row = 0; row < height; row++)
   {
     for (int col = 0; col < width; col++)
     {
-      base_block_t *surr_blocks = get_surrounding_blocks(map, (vector_2d_t){.y = row, .x = col}, width, height);
+      block_t *surr_blocks = get_surrounding_blocks(map, (vector_2d_t){.x = col, .y = row }, width, height);
       int path_count = 0;
       int room_count = 0;
       int none_count = 0;
@@ -188,7 +188,7 @@ static void refine_map(base_block_t **map, int width, int height)
   }
 }
 
-void free_map(base_block_t **map, int height)
+void free_map(block_t **map, int height)
 {
   for (int i = 0; i < height; i++)
   {
@@ -203,18 +203,18 @@ void free_map(base_block_t **map, int height)
  * After generating the map the map should be remoddeld to match the wanted
  * level style
 */
-base_block_t **generate_simple_map(int width, int height, int min_room_width, int min_room_height, int iterations)
+block_t **generate_simple_map(int width, int height, int min_room_width, int min_room_height, int iterations)
 {
   // You can set the seed to a specific number to set a specific map layout
   srand(time(NULL));
-  base_block_t **new_map = init_map(width, height);
+  block_t **new_map = init_map(width, height);
   bsp(new_map, iterations, 1, width - 1, 1, height - 1, min_room_width, min_room_height);
   refine_map(new_map, width, height);
   return new_map;
 }
 
-// Debug print map to terminal
-// void print_map(base_block_t **map, int width, int height)
+// // Debug print map to terminal
+// void print_map(block_t **map, int width, int height)
 // {
 //   for (int i = 0; i < width; i++)
 //   {
